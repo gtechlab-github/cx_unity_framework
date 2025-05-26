@@ -125,20 +125,26 @@ var WebGLInput = {
 	WebGLInputIsFocus: function (id) {
 		return instances[id] === document.activeElement;
 	},
+
 	WebGLInputOnValueChange:function(id, cb){
         var input = instances[id];
         input.oninput = function () {
-			var intArray = intArrayFromString(input.value);
-            var value = (allocate.length <= 2) ? allocate(intArray, ALLOC_NORMAL):allocate(intArray, 'i8', ALLOC_NORMAL);
-            Runtime.dynCall("vii", cb, [id,value]);
+			// var intArray = intArrayFromString(input.value);
+            // var value = (Module.allocate.length <= 2) ? Module.allocate(intArray, ALLOC_NORMAL):Module.allocate(intArray, 'i8', ALLOC_NORMAL);
+            // Runtime.dynCall("vii", cb, [id,value]);
+			var strPtr = stringToNewUTF8(input.value);
+			Runtime.dynCall("vii", cb, [id, strPtr]);
         };
     },
+	
 	WebGLInputOnEditEnd:function(id, cb){
         var input = instances[id];
         input.onchange = function () {
-			var intArray = intArrayFromString(input.value);
-            var value = (allocate.length <= 2) ? allocate(intArray, ALLOC_NORMAL):allocate(intArray, 'i8', ALLOC_NORMAL);
-            Runtime.dynCall("vii", cb, [id,value]);
+			// var intArray = intArrayFromString(input.value);
+            // var value = (Module.allocate.length <= 2) ? Module.allocate(intArray, ALLOC_NORMAL):Module.allocate(intArray, 'i8', ALLOC_NORMAL);
+            // Runtime.dynCall("vii", cb, [id,value]);
+			var strPtr = stringToNewUTF8(input.value);
+			Runtime.dynCall("vii", cb, [id, strPtr]);
         };
     },
 	WebGLInputSelectionStart:function(id){
