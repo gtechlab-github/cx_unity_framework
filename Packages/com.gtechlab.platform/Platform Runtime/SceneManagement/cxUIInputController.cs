@@ -46,15 +46,40 @@ public class cxUIInputController : MonoSingleton<cxUIInputController> {
     public bool IsFocused => focused != null || IsAnyInputFieldFocused ();
     public bool HasFocus(GameObject gObject) => focused == gObject ||  EventSystem.current.currentSelectedGameObject == gObject;
 
-    public void AcquireFocus (GameObject go) {
+    public bool CanAcquireFocus(GameObject go) {
+        if(focused == go)
+            return true;
+
+        if(focused != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public bool AcquireFocus (GameObject go, bool force = false) {
+        if(focused == go)
+            return true;
+
+        if(focused != null && !force) {
+           return false;
+        }
+
         focused = go;
+        Debug.Log($"AcquireFocus {go.name}");
+        return true;
     }
 
     public void ReleaseFocus (GameObject go) {
-        if (focused == go)
+        if (focused == go) {
             focused = null;
+            Debug.Log($"ReleaseFocus {go.name}");
+        }
     }
 
+    //<summary>
+    // 입력 필드에 포커스 되어 있는지 상태 체크
+    //</summary>
     public bool IsAnyInputFieldFocused () {
         var selectedObject = EventSystem.current.currentSelectedGameObject;
         return selectedObject != null && (
@@ -63,6 +88,9 @@ public class cxUIInputController : MonoSingleton<cxUIInputController> {
         );
     }
 
+    //<summary>
+    // 화면 좌표를 정규화된 좌표로 변환
+    //</summary>
     public Vector2 GetNormalizedPosition(Vector2 position) {
         float refX = (float) referenceResolution.x / Screen.width;
         float refY = (float) referenceResolution.y / Screen.height;
@@ -84,7 +112,7 @@ public class cxUIInputController : MonoSingleton<cxUIInputController> {
         }
 
         if (OnMouseDown) {
-            if (!cxUISystemUtil.IsMousePointerOnUI (0)) {
+            if (!cxUISystemUtil.IsMousePointerOnUI ()) {
                 beginPosition = Input.mousePosition;
                 lastPosition = beginPosition;
                 mouseButton = MouseButtonID;
@@ -103,7 +131,7 @@ public class cxUIInputController : MonoSingleton<cxUIInputController> {
         bool release = false;
 
         if (OnMouseUp) {
-            if (!cxUISystemUtil.IsMousePointerOnUI (0)) {
+            if (!cxUISystemUtil.IsMousePointerOnUI ()) {
                 if (!mouseDragged) {
                     ScreenClickedThisFrame = Input.mousePosition;
                     pressTime = Time.realtimeSinceStartup - downTime;

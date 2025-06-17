@@ -1,0 +1,35 @@
+G-Tech Lab Framework License
+----------------------------
+
+Copyright (c) [2023] G-Tech Lab. All rights reserved.
+
+This software includes proprietary framework components developed by G-Tech Lab (the "Company").
+
+License Terms:
+
+1. Ownership
+   - The framework source code (the "Framework") included in this software is the exclusive property of G-Tech Lab.
+   - All intellectual property rights in and to the Framework remain with the Company.
+
+2. Permitted Use
+   - The recipient (the "Client") is granted a limited, non-transferable license to use the Framework solely for the purpose of maintaining and operating the custom-developed software delivered by the Company.
+   - This license does not permit reuse of the Framework in other projects, redistribution, sublicensing, or modification for purposes beyond the original scope of delivery.
+
+3. Restrictions
+   - The Client may not distribute, publish, or share the Framework, in whole or in part, to any third party.
+   - Commercial use, reverse engineering, or integration of the Framework into unrelated systems is strictly prohibited without prior written consent from the Company.
+
+4. External Components
+   - Portions of the Framework may include or make use of third-party open-source software or libraries.
+   - Such components are governed by their respective licenses and copyright policies.
+   - Licenses for all third-party components are included in their corresponding subdirectories (e.g., `libs/`, `vendor/`) under a `LICENSE` or `NOTICE` file.
+   - The Company makes no claim of ownership over such third-party software.
+
+5. Disclaimer
+   - The Framework is provided "as is" without warranty of any kind, express or implied.
+   - G-Tech Lab shall not be liable for any damages arising from the use or inability to use the Framework outside of the permitted scope.
+
+6. Governing Law
+   - This license is governed by the laws of the Republic of Korea. Any disputes shall be resolved in the courts located in the Company’s jurisdiction.
+
+For inquiries, please contact: e.jongok@gmail.com

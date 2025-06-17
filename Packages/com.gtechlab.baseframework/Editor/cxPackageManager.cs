@@ -7,7 +7,7 @@ using UnityEditor;
 using UnityEngine;
 
 public static class cxPackageManager {
-     /*
+    /*
     Local
     "com.gtechlab.baseframework": "file:/Users/CRAZYBOX_SVN_ROOT/G-TechLab Frameworks/unity_framework_project/Packages/com.gtechlab.baseframework",
     "com.gtechlab.game": "file:/Users/CRAZYBOX_SVN_ROOT/G-TechLab Frameworks/unity_framework_project/Packages/com.gtechlab.game",
@@ -20,32 +20,33 @@ public static class cxPackageManager {
     */
 
     public const string PackageLocalPath = "/Users/CRAZYBOX_SVN_ROOT/G-TechLab Frameworks/unity_framework_project/Packages/";
-    public const string PackageGitPath = "https://github.com/whilin/crazybox_unity_baseframework.git?path=/Packages/";
+    // public const string PackageGitPath = "https://github.com/whilin/crazybox_unity_baseframework.git?path=/Packages/";
+    public const string PackageGitPath = "https://github.com/gtechlab-github/cx_unity_framework.git?path=/Packages/";
 
     public class PackageFile {
         public Dictionary<string, string> dependencies;
     }
-   
+
     [MenuItem ("Tools/G-Tech Lab/CX Package/To Local CX Package")]
     public static void ToLocalUPM () {
         var packageInfo = LoadPackage ();
-        packageInfo.dependencies["com.gtechlab.baseframework"] = "file:"+PackageLocalPath + "com.gtechlab.baseframework";
-        packageInfo.dependencies["com.gtechlab.game"] =  "file:"+PackageLocalPath + "com.gtechlab.game";
-        packageInfo.dependencies["com.gtechlab.platform"] =  "file:"+PackageLocalPath + "com.gtechlab.platform";
+        packageInfo.dependencies["com.gtechlab.baseframework"] = "file:" + PackageLocalPath + "com.gtechlab.baseframework";
+        packageInfo.dependencies["com.gtechlab.game"] = "file:" + PackageLocalPath + "com.gtechlab.game";
+        packageInfo.dependencies["com.gtechlab.platform"] = "file:" + PackageLocalPath + "com.gtechlab.platform";
 
         SavePackage (packageInfo);
     }
 
     [MenuItem ("Tools/G-Tech Lab/CX Package/To Git CX Package(Auto)")]
-    public static void ToGitUPMAuto () { 
-         string filepath = Path.Combine (PackageLocalPath, "version.txt");
-          using (var file = File.OpenText (filepath)) {
-              string version = file.ReadLine();
-              Debug.Log("Package Local Version:"+version);
-              ToGitUPM(version);
-          }
+    public static void ToGitUPMAuto () {
+        string filepath = Path.Combine (PackageLocalPath, "version.txt");
+        using (var file = File.OpenText (filepath)) {
+            string version = file.ReadLine ();
+            Debug.Log ("Package Local Version:" + version);
+            ToGitUPM (version);
+        }
     }
-    
+
     public static void ToGitUPM (string tag) {
 
         //string tag = "v2.0.7";

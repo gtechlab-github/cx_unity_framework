@@ -141,7 +141,7 @@ public class cxDefaultAvatarInputController : cxAbstractAvatarInputController {
         if (clickPoint.HasValue) {
             var physics = gameObject.scene.GetPhysicsScene ();
             var ray = Camera.main.ScreenPointToRay (clickPoint.Value);
-            if (!cxUISystemUtil.IsMousePointerOnUI (0)) {
+            if (!cxUISystemUtil.IsMousePointerOnUI ()) {
                 if (physics.Raycast (ray.origin, ray.direction, out RaycastHit hitted, float.MaxValue)) {
                     int hitLayerMask = 1 << hitted.collider.gameObject.layer;
 

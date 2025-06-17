@@ -108,6 +108,8 @@ public class cxAppBuilder : ScriptableObject {
             buildTargetGroup = BuildTargetGroup.Standalone;
         } else if(configuration.buildTarget == BuildTarget.StandaloneOSX) {
             buildTargetGroup = BuildTargetGroup.Standalone;
+        } else if(configuration.buildTarget == BuildTarget.StandaloneWindows) {
+            buildTargetGroup = BuildTargetGroup.Standalone;
         } else {
             UnityEngine.Debug.LogError("지원하지 않는 빌드 타겟입니다.");
             return;
@@ -124,9 +126,39 @@ public class cxAppBuilder : ScriptableObject {
 
         EditorUserBuildSettings.SwitchActiveBuildTarget (buildTargetGroup, configuration.buildTarget);
 
-        buildPlayerOptions.locationPathName = GetBuildPath (configuration, configuration.buildTarget);
+        buildPlayerOptions.locationPathName = GetBuildPath (configuration.deployBasePath, configuration.buildTarget);
         buildPlayerOptions.target = configuration.buildTarget;
         buildPlayerOptions.options = BuildOptions.None;
+
+        // Windows 빌드 설정
+        /*
+        if (configuration.buildTarget == BuildTarget.StandaloneWindows64 || 
+            configuration.buildTarget == BuildTarget.StandaloneWindows) {
+            
+            // 빌드 옵션 설정
+            buildPlayerOptions.options = BuildOptions.CompressWithLz4HC;
+            
+            // 개발 빌드인 경우 추가 옵션 설정
+            if (EditorUserBuildSettings.development) {
+                buildPlayerOptions.options |= BuildOptions.Development | BuildOptions.EnableDeepProfilingSupport;
+            }
+
+            // 스크립트 백엔드 설정
+            PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
+            
+            // IL2CPP 설정 (개발 빌드인 경우)
+            if (EditorUserBuildSettings.development) {
+                PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
+                PlayerSettings.SetManagedStrippingLevel(BuildTargetGroup.Standalone, ManagedStrippingLevel.Disabled);
+            }
+
+            // 빌드 아키텍처 설정
+            EditorUserBuildSettings.SetPlatformSettings("Standalone", "Architecture", "x86_64");
+            
+            // 빌드 타겟 설정
+            EditorUserBuildSettings.standaloneBuildSubtarget = StandaloneBuildSubtarget.Player;
+        }
+        */
 
         if (!Directory.Exists (buildPlayerOptions.locationPathName)) {
             Directory.CreateDirectory (buildPlayerOptions.locationPathName);
@@ -135,8 +167,8 @@ public class cxAppBuilder : ScriptableObject {
         BuildPipeline.BuildPlayer (buildPlayerOptions);
     }
 
-    public static string GetBuildPath (cxAppBuilder configuration, BuildTarget buildTarget) {
-        string basePath = Path.Combine (Application.dataPath, "..", configuration.deployBasePath, buildTarget.ToString ());
+    public static string GetBuildPath (string deployBasePath, BuildTarget buildTarget) {
+        string basePath = Path.Combine (Application.dataPath, "..", deployBasePath, buildTarget.ToString ());
         return basePath;
     }
 }

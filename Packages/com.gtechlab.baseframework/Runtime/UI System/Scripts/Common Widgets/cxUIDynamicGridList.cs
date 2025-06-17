@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIDynamicGridList : MonoBehaviour {
+public class cxUIDynamicGridList : MonoBehaviour {
 
 	public GameObject prefabItem;
 	public GameObject prefabDummy;
-	public LayoutGroup gridLayout;
+	public Transform gridLayout;
 	
 	public int lineCount;
 
@@ -36,7 +36,7 @@ public class UIDynamicGridList : MonoBehaviour {
 			return m_itemList[i];
 		else
 		{
-			GameObject go = AddChild(gridLayout.gameObject, prefabItem) as GameObject;
+			GameObject go = AddChild(gridLayout, prefabItem) as GameObject;
 
 			go.name = (100 + i).ToString();
 			m_itemList.Add(go);
@@ -50,7 +50,7 @@ public class UIDynamicGridList : MonoBehaviour {
 			return m_itemList[i].GetComponent<T>();
 		else
 		{
-			GameObject go = AddChild(gridLayout.gameObject, prefabItem) as GameObject;
+			GameObject go = AddChild(gridLayout, prefabItem) as GameObject;
 
 			go.name = (100 + i).ToString();
 			m_itemList.Add(go);
@@ -67,7 +67,7 @@ public class UIDynamicGridList : MonoBehaviour {
 
 		for (int i = 0; i < count; i++)
 		{
-			GameObject go = AddChild(gridLayout.gameObject, prefabDummy) as GameObject;
+			GameObject go = AddChild(gridLayout, prefabDummy) as GameObject;
 
 			go.name = (10000 + i).ToString();
 			m_dummyList.Add(go);
@@ -78,8 +78,9 @@ public class UIDynamicGridList : MonoBehaviour {
 	public void EndListBuild(int used, bool bRefresh)
 	{
 		ClearUnusedItemList(used);
-
-		Refesh(bRefresh);
+		if(bRefresh) {
+			Refesh();
+		}
 	}
 
 
@@ -118,7 +119,7 @@ public class UIDynamicGridList : MonoBehaviour {
 			{
 				for (int j = m_dummyList.Count; j < need; j++)
 				{
-					GameObject go = AddChild(gridLayout.gameObject, prefabDummy);
+					GameObject go = AddChild(gridLayout, prefabDummy);
 					//go.name = (900 + j).ToString();
 					go.name = "9999999";
 					m_dummyList.Add(go);
@@ -127,16 +128,12 @@ public class UIDynamicGridList : MonoBehaviour {
 		}
 	}
 
-	public void Refesh(bool bRefresh = true)
+	public void Refesh()
 	{
-		// gridLayout.SetLayoutHorizontal ();
-		// gridLayout.SetLayoutVertical ();
-		
 		LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform) gridLayout.transform);
-		//LayoutRebuilder.MarkLayoutForRebuild((RectTransform) gridLayout.transform);
 	}
 
-	static public GameObject AddChild (GameObject parent, GameObject prefab)
+	static public GameObject AddChild (Transform parent, GameObject prefab)
 	{
 		GameObject go = Instantiate (prefab) as GameObject;
 		int layer = -1;
@@ -148,12 +145,12 @@ public class UIDynamicGridList : MonoBehaviour {
 		if (parent != null)
 		{
 			Transform t = go.transform;
-			t.SetParent(parent.transform);
+			t.SetParent(parent);
 			//t.parent = parent.transform;
 			t.localPosition = Vector3.zero;
 			t.localRotation = Quaternion.identity;
 			t.localScale = Vector3.one;
-			if (layer == -1) go.layer = parent.layer;
+			if (layer == -1) go.layer = parent.gameObject.layer;
 			else if (layer > -1 && layer < 32) go.layer = layer;
 		}
 		return go;

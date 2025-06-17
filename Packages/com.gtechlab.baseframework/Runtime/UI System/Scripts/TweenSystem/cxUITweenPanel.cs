@@ -89,7 +89,7 @@ public class cxUITweenPanel: MonoBehaviour {
 
     void OnDisable()
     {
-        if(m_activeFxCo !=null)
+        if(m_activeFxCo !=null && cxUITweenHelper.Instance !=null)
             cxUITweenHelper.Instance.StopCoroutine(m_activeFxCo);
     }
 

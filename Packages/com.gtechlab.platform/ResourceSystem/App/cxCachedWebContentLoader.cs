@@ -168,6 +168,8 @@ public class cxCachedWebContentLoader : cxSingleton<cxCachedWebContentLoader> {
                 content = await DownloadAudio (url);
             } else if(contentType == typeof(VideoClip)) {
                 throw new Exception("cxCachedWebContent not support videoClip");
+            } else if(contentType == typeof(TextAsset)) {
+                content = await DownloadTextAsset (url);
             } else {
                 throw new Exception("cxCachedWebContent unsupported type:"+nameof(contentType));
             }
@@ -197,7 +199,21 @@ public class cxCachedWebContentLoader : cxSingleton<cxCachedWebContentLoader> {
     Sprite ToSprite (Texture2D texture) {
         return Sprite.Create (texture, new Rect (0, 0, texture.width, texture.height), new Vector2 (0.5f, 0.5f), 100);
     }
+    async Task<TextAsset> DownloadTextAsset (string url) {
 
+        var op = UnityWebRequest.Get (url).SendWebRequest ();
+        await new WaitUntil (() => op.isDone);
+
+        TextAsset myTextAsset = null;
+
+        if (op.webRequest.result == UnityWebRequest.Result.Success)
+            myTextAsset = new TextAsset (op.webRequest.downloadHandler.text);
+        else {
+            Debug.LogWarning ($"cxCachedContentLoader DownloadTextAsset failed: {url}");
+        }
+
+        return myTextAsset;
+    }
     async Task<Texture2D> DownloadImage (string url) {
 
         var op = UnityWebRequestTexture.GetTexture (url).SendWebRequest ();

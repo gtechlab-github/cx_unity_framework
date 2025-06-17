@@ -672,6 +672,8 @@ public class cxUITweenHelper : MonoBehaviour {
 
         do {
             yield return null;
+            if(!target)
+                yield break;
 
             var v = tw.VectorValue (fun, initValue, nextValue);
             target.transform.localScale = v;
