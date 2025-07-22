@@ -48,6 +48,7 @@ public static class cxUISystemUtil {
     /// <summary>
     /// 현재 포인터가 UI 요소 위에 있는지 확인합니다. ( UI Layer Only)
     /// </summary>
+    /// <param name="layerMask">특정 레이어 오브젝트에 대해서만 체크할 때 사용</param>
     /// <returns>UI 요소 위에 있으면 true, 아니면 false</returns>
     public static bool IsPointerOnUIEx (int layerMask = -1) {
         EventSystem system = UnityEngine.EventSystems.EventSystem.current;
@@ -91,21 +92,28 @@ public static class cxUISystemUtil {
     //     return _uiLayer;
     // }
 
+    static List<RaycastResult> _results = new List<RaycastResult> ();
+
     public static bool IsPointerOverUI (Vector2 position, int layerMask = -1) {
         if (EventSystem.current == null) return false;
 
         PointerEventData eventData = new PointerEventData (EventSystem.current);
         eventData.position = position;
-        List<RaycastResult> results = new List<RaycastResult> ();
-        EventSystem.current.RaycastAll (eventData, results);
+        
+        _results.Clear ();
+        EventSystem.current.RaycastAll (eventData, _results);
 
         //int uiLayer = GetUILayer ();
 
         // GraphicRaycaster만 체크 (UI 요소만)
-        return results.Exists (result => result.module is UnityEngine.UI.GraphicRaycaster
+        return _results.Exists (result => result.module is UnityEngine.UI.GraphicRaycaster
             && (layerMask == -1 || (layerMask & (1 << result.gameObject.layer)) != 0)
         );
     }
+
+    // public static void RefreshLayout (this RectTransform rectTransform, bool deep = false) {
+    //     RefreshLayout (rectTransform, deep);
+    // }
 
     public static void RefreshLayout (Transform transform, bool deep = false) {
         RefreshLayout (transform as RectTransform, deep);
@@ -113,8 +121,10 @@ public static class cxUISystemUtil {
 
     public static void RefreshLayout (RectTransform rectTransform, bool deep = false) {
         LayoutRebuilder.MarkLayoutForRebuild (rectTransform);
-
-        rectTransform.gameObject.GetComponent<MonoBehaviour> ().StartCoroutine (RefreshLayoutCoroutine (rectTransform, deep));
+        var mono = rectTransform.gameObject.GetComponent<MonoBehaviour> ();
+        if (mono.isActiveAndEnabled) {
+            mono.StartCoroutine (RefreshLayoutCoroutine (rectTransform, deep));
+        }
     }
 
     public static IEnumerator RefreshLayoutCoroutine (RectTransform rectTransform, bool deep) {

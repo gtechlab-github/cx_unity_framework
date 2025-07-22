@@ -1,5 +1,7 @@
+using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.UI;
+using UniRx;
 
 [RequireComponent (typeof (RectTransform))]
 public class cxUIViewportCanvas : MonoBehaviour {
@@ -11,6 +13,10 @@ public class cxUIViewportCanvas : MonoBehaviour {
 
     void Awake () {
         sceneViewRectT = GetComponent<RectTransform> ();
+
+        sceneViewRectT.OnRectTransformDimensionsChangeAsObservable().Subscribe (_ => {
+            OnScreenResized ();
+        }).AddTo(this);
     }
 
     public void CaptureCamera (Camera camera) {
@@ -49,6 +55,8 @@ public class cxUIViewportCanvas : MonoBehaviour {
     }
 
     void OnScreenResized () {
+        if (!camera)
+            return;
 
         float screenWidth = Screen.width;
         float screenHeight = Screen.height;
@@ -68,12 +76,12 @@ public class cxUIViewportCanvas : MonoBehaviour {
         keepHeight = sceneViewRectT.rect.height;
     }
 
-    void Update () {
-        if (camera) {
-            if (!Mathf.Approximately (keepWidth, sceneViewRectT.rect.width) ||
-                !Mathf.Approximately (keepHeight, sceneViewRectT.rect.height)) {
-                OnScreenResized ();
-            }
-        }
-    }
+    // void Update () {
+    //     if (camera) {
+    //         if (!Mathf.Approximately (keepWidth, sceneViewRectT.rect.width) ||
+    //             !Mathf.Approximately (keepHeight, sceneViewRectT.rect.height)) {
+    //             OnScreenResized ();
+    //         }
+    //     }
+    // }
 }

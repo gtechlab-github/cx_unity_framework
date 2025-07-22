@@ -46,10 +46,10 @@ public class cxFirebaseStorageWebGLDriver : cxIFirebaseStorageDriver {
         this.storageUrl = storageUrl;
     }
 
-    public async Task<string> UploadImage (string path, string key, byte[] imageBytes) {
+    public async Task<string> UploadImage (string path, string key, byte[] imageBytes, string contentType) {
         try {
             path = string.Join("/", path, key);
-            var jsonResponse = await FirebaseStorage.UploadFile(path, imageBytes);
+            var jsonResponse = await FirebaseStorage.UploadFile(path, imageBytes, contentType);
             //Debug.Log("UploadImage Response:" + jsonResponse.ToString());
             var res = JsonConvert.DeserializeObject<UploadResponse>(jsonResponse);
             if(res.state != "success") {

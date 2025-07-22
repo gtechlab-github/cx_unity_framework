@@ -106,7 +106,7 @@ public class cxUniversalResourceLoader : cxSingleton<cxUniversalResourceLoader> 
         }
 
         try {
-             onProgress (0.9f);
+             onProgress (1.0f);
             var asyncOp = SceneManager.LoadSceneAsync (path, loadSceneMode);
             //asyncOp.allowSceneActivation = false;
 

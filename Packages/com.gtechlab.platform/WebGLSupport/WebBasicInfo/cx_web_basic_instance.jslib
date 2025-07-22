@@ -1,3 +1,6 @@
+// Unity WebGL 호환성을 위한 함수 정의
+//var UTF8ToString = UTF8ToString || Pointer_stringify;
+
 mergeInto(LibraryManager.library, {
     
     hello: function () {
@@ -17,7 +20,7 @@ mergeInto(LibraryManager.library, {
         d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
         var expires = "expires=" + d.toUTCString();
         //document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-        document.cookie = Pointer_stringify(cname) + "=" + Pointer_stringify(cvalue) + expires + ";path=/";
+        document.cookie = UTF8ToString(cname) + "=" + UTF8ToString(cvalue) + expires + ";path=/";
 
         console.log('set cookie=' + document.cookie);
     },
@@ -25,7 +28,7 @@ mergeInto(LibraryManager.library, {
     getCookie: function (cname) {
         var ret = "";
         //var name = cname + "=";
-        var name = Pointer_stringify(cname) + "=";
+        var name = UTF8ToString(cname) + "=";
         var decodedCookie = decodeURIComponent(document.cookie);
         console.log('get cookie=' + decodedCookie);
         var ca = decodedCookie.split(';');

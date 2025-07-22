@@ -1,4 +1,4 @@
-#if UNITY_EDITOR || !UNITY_WEBGL
+#if !UNITY_WEBGL || UNITY_EDITOR
 
 using System;
 using System.Collections;
@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Firebase;
 using Firebase.Auth;
+using Google;
 using UnityEngine;
+using static Google.GoogleSignIn;
 
 public class cxFirebaseAuthMobileDriver : cxIFirebaseAuthDriver {
 
@@ -163,24 +165,44 @@ public class cxFirebaseAuthMobileDriver : cxIFirebaseAuthDriver {
     }
 
     public override async Task<TSocialUserModel> SignInWithGoogle () {
-        throw new System.NotImplementedException ();
-        /*
-        try {
-            var auth = FirebaseAuth.GetAuth (FirebaseApp.DefaultInstance);
+        Firebase.Auth.FirebaseAuth auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
 
-            var result = await auth.SignInWithCredentialAsync ();
-            currentUser = result.User;
+        if (auth.CurrentUser != null)
+            Debug.LogFormat ("[Firebase] has auth.CurrentUser ProviderId:{0} UserId:{1} ", auth.CurrentUser.ProviderId, auth.CurrentUser.UserId);
 
-            Debug.Log ("User signed in successfully: " + currentUser.UserId);
+        if (auth.CurrentUser != null) {
+            return new TSocialUserModel () {
+            socialKey = auth.CurrentUser.UserId,
+            socialType = TSocialType.Google,
+            email = auth.CurrentUser.Email,
+            nickname = auth.CurrentUser.DisplayName,
+            photoURL = auth.CurrentUser.PhotoUrl?.AbsoluteUri
 
-            return new cxFirebaseUser {
-                displayName = currentUser.DisplayName,
-                    email = currentUser.Email,
-                    uid = currentUser.UserId,
-                    isAnonymous = currentUser.IsAnonymous,
-                    providerId = currentUser.ProviderId,
-                    photoUrl = currentUser.PhotoUrl.ToString ()
             };
+        }
+
+        try {
+            Debug.LogFormat ("[Firebase] GoogleSignIn Try");
+
+            GoogleSignInUser signIn = await GoogleSignIn.DefaultInstance.SignIn ();
+
+            Debug.LogFormat ("[Firebase] GoogleSignIn Completed AuthCode:{0}", signIn.AuthCode);
+
+            Credential credential = Firebase.Auth.GoogleAuthProvider.GetCredential (signIn.IdToken, null);
+
+            FirebaseUser firebaseUser = await auth.SignInWithCredentialAsync (credential);
+          //  auth.SignInWithCredentialAsync (credential);
+
+            Debug.LogFormat ("[Firebase] GoogleSignIn Firebase UserId:{0}", firebaseUser.UserId);
+
+            return new TSocialUserModel () {
+                socialKey = firebaseUser.UserId,
+                    socialType = TSocialType.Google,
+                    email = firebaseUser.Email,
+                    nickname = firebaseUser.DisplayName,
+                    photoURL = firebaseUser.PhotoUrl?.AbsoluteUri
+            };
+
         } catch (TaskCanceledException ex) {
             throw new cxBlocException (0, "SignIn has been cancelled.");
         } catch (SignInException ex) {
@@ -192,7 +214,7 @@ public class cxFirebaseAuthMobileDriver : cxIFirebaseAuthDriver {
             Debug.LogException (ex);
             throw new cxBlocException (0, ex.Message);
         }
-        */
+        
     }
 
     public override async Task<TSocialUserModel> SignInAnonymously () {

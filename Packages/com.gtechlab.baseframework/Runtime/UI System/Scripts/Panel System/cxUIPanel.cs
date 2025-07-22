@@ -12,6 +12,8 @@ public abstract class cxUIPanel : MonoBehaviour {
     private bool initialized = false;
     private bool activating = false;
 
+    public bool IsOpened => activating;
+
     void Awake () {
         if (!initialized) {
             initialized = true;

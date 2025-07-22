@@ -16,7 +16,7 @@ namespace FirebaseWebGL.Scripts.FirebaseBridge
         /// <param name="callback"> Name of the method to call when the operation was successful. Method must have signature: void Method(string output) </param>
         /// <param name="fallback"> Name of the method to call when the operation was unsuccessful. Method must have signature: void Method(string output). Will return a serialized FirebaseError object </param>
         [DllImport("__Internal", EntryPoint = "UploadFile")]
-        public static extern void _UploadFile(string path, string data, int callbackId);
+        public static extern void _UploadFile(string path, string data, string contentType, int callbackId);
 
         /// <summary>
         /// Downloads a byte array from storage
@@ -28,10 +28,10 @@ namespace FirebaseWebGL.Scripts.FirebaseBridge
         [DllImport("__Internal", EntryPoint ="DownloadFile")]
         public static extern void _DownloadFile(string path,  int callbackId);
 
-         public static async Task<string> UploadFile (string path, byte [] imageBytes) {
+         public static async Task<string> UploadFile (string path, byte [] imageBytes, string contentType) {
             var context = cxWebCallack.AddCallback ();
             var base64 = Convert.ToBase64String(imageBytes);
-            _UploadFile (path,base64 , context.callbackId);
+            _UploadFile (path,base64 , contentType, context.callbackId);
             return await context.tcs.Task;
         }
 

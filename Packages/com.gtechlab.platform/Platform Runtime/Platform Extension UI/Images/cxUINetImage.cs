@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 [RequireComponent (typeof (AspectRatioFitter))]
 [RequireComponent (typeof (Image))]
+[ExecuteInEditMode]
 public class cxUINetImage : MonoBehaviour {
 
     public string url;
@@ -57,6 +58,17 @@ public class cxUINetImage : MonoBehaviour {
         } else {
             image.color = defaultColor;
             image.sprite = null;
+        }
+    }
+
+    void OnValidate () {
+        // Unity Editor에서 속성 변경 시 즉시 적용
+        if (!Application.isPlaying) {
+            if (!string.IsNullOrEmpty(url)) {
+              //  Load(url);
+            } else {
+                SetEmpty();
+            }
         }
     }
 }

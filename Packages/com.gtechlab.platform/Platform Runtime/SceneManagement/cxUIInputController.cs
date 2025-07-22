@@ -46,12 +46,16 @@ public class cxUIInputController : MonoSingleton<cxUIInputController> {
     public bool HasFocus (GameObject gObject) => focused == gObject || EventSystem.current.currentSelectedGameObject == gObject;
 
     public bool CanAcquireFocus (GameObject go) {
+
         if (focused == go)
             return true;
 
         if (focused != null) {
             return false;
         }
+
+        if (IsAnyInputFieldFocused ())
+            return false;
 
         return true;
     }
@@ -60,6 +64,14 @@ public class cxUIInputController : MonoSingleton<cxUIInputController> {
         if (focused == go)
             return true;
 
+        if (IsAnyInputFieldFocused ()) {
+            if (!force)
+                return false;
+            else {
+                DeselectAllInputFields ();
+            }
+        }
+     
         if (focused != null && !force) {
             Debug.LogWarning ($"AcquireFocus not permitted to {go.name}, focused to {focused?.name}");
             return false;
@@ -74,7 +86,7 @@ public class cxUIInputController : MonoSingleton<cxUIInputController> {
             focused = null;
             // Debug.Log($"ReleaseFocus {go.name}");
         } else {
-            Debug.LogWarning ($"ReleaseFocus not permitted to {go.name}, focused to {focused?.name}");
+            // Debug.LogWarning ($"ReleaseFocus not permitted to {go.name}, focused to {focused?.name}");
         }
     }
 
@@ -87,6 +99,16 @@ public class cxUIInputController : MonoSingleton<cxUIInputController> {
             selectedObject.GetComponent<InputField> () != null ||
             selectedObject.GetComponent<TMP_InputField> () != null
         );
+    }
+
+    private void DeselectAllInputFields () {
+        var selectedObject = EventSystem.current.currentSelectedGameObject;
+        if (selectedObject != null) {
+            selectedObject.GetComponent<InputField> ()?.DeactivateInputField ();
+            selectedObject.GetComponent<TMP_InputField> ()?.DeactivateInputField ();
+            EventSystem.current.SetSelectedGameObject (null);
+        }
+
     }
 
     //<summary>

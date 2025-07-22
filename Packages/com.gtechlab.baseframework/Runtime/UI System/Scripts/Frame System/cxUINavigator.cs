@@ -30,8 +30,13 @@ public class cxUINavigator : MonoSingleton<cxUINavigator> {
                 continue;
             }
 
-            var frame = PrefabCreateUGUI<cxUIFrame> (p, rootCanvas.gameObject);
-            frames.Add (frame);
+            try {
+                var frame = PrefabCreateUGUI<cxUIFrame> (p, rootCanvas.gameObject);
+                frames.Add (frame);
+            } catch (Exception ex) {
+                Debug.LogError ("cxUINavigator Create Frame failed: " + p.name);
+                Debug.LogException (ex);
+            }
         }
 
         foreach (var p in prefabs) {
@@ -41,8 +46,13 @@ public class cxUINavigator : MonoSingleton<cxUINavigator> {
                 Debug.LogError ("Prefab already exists frame:" + prevFrame.name + " type:" + type);
                 continue;
             }
-            var frame = PrefabCreateUGUI<cxUIFrame> (p, rootCanvas.gameObject);
-            frames.Add (frame);
+            try {
+                var frame = PrefabCreateUGUI<cxUIFrame> (p, rootCanvas.gameObject);
+                frames.Add (frame);
+            } catch (Exception ex) {
+                Debug.LogError ("cxUINavigator Create Frame failed: " + p.name);
+                Debug.LogException (ex);
+            }
         }
     }
 
@@ -157,8 +167,9 @@ public class cxUINavigator : MonoSingleton<cxUINavigator> {
             return prefab;
         } catch (System.Exception ex) {
             Debug.Log ("PrefabCreate except : " + ex.Message);
+            throw ex;
         }
-        return null;
+        //return null;
     }
 
 }

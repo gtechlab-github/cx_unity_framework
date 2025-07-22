@@ -1,4 +1,7 @@
-﻿var LibraryFileUploadManager = {
+﻿// Unity WebGL 호환성을 위한 함수 정의
+//var UTF8ToString = UTF8ToString || Pointer_stringify;
+
+var LibraryFileUploadManager = {
 
     $Unity_FileUploadManager: {
         detectOS:function(ua) {
@@ -726,9 +729,9 @@
 
         Unity_FileUploadManager.hide();
     
-        titleText = Pointer_stringify(titleText);
-        uploadBtnText = Pointer_stringify(uploadBtnText);
-        cancelBtnText = Pointer_stringify(cancelBtnText);
+        titleText = UTF8ToString(titleText);
+        uploadBtnText = UTF8ToString(uploadBtnText);
+        cancelBtnText = UTF8ToString(cancelBtnText);
     
         Unity_FileUploadManager.isPopupDialog = true;
         
@@ -880,7 +883,7 @@
     {
         if(Unity_FileUploadManager.isDebug) console.log("Unity_FileUploadManager_SetDescription()");
         
-        var descriptionStr = Pointer_stringify(descriptionStr);
+        var descriptionStr = UTF8ToString(descriptionStr);
         if(Unity_FileUploadManager.isDropInput){
             if(descriptionStr == "") descriptionStr = "Drop files here";
             var fileDropArea = document.getElementById('file_drop_area');
@@ -896,7 +899,7 @@
     {
         if(Unity_FileUploadManager.isDebug) console.log("Unity_FileUploadManager_SetAllowedFileName()");
         
-        var filenameRegStr = Pointer_stringify(filenameRegStr);
+        var filenameRegStr = UTF8ToString(filenameRegStr);
         if(filenameRegStr == "") filenameRegStr = ".*";
         Unity_FileUploadManager.filenameRegStr = filenameRegStr;
     },

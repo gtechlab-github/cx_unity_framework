@@ -9,42 +9,43 @@ public class cxAppBuilder : ScriptableObject {
 
     public BuildTarget buildTarget;
     public cxStartUpEnvId startUpEnvId;
+    public string defineSymbolAdd;
+    public string defineSymbolRemove;
     public string mainScenePath;
     public List<string> contentScenePaths;
 
-    [Header("Deploy Path based on Project Path")]
+    [Header ("Deploy Path based on Project Path")]
     public string deployBasePath = "Deploy";
 
-
-    [MenuItem("Assets/G-Tech Lab/Build App", true)]
-    public static bool ValidateBuild() {
+    [MenuItem ("Assets/G-Tech Lab/Build App", true)]
+    public static bool ValidateBuild () {
         return Selection.activeObject is cxAppBuilder;
     }
 
-    [MenuItem("Assets/G-Tech Lab/Build App")]
-    public static void BuildApp() {
+    [MenuItem ("Assets/G-Tech Lab/Build App")]
+    public static void BuildApp () {
         var config = Selection.activeObject as cxAppBuilder;
         if (config == null) {
-            UnityEngine.Debug.LogError("cxBuilderConfiguration 에셋을 선택해주세요.");
+            UnityEngine.Debug.LogError ("cxBuilderConfiguration 에셋을 선택해주세요.");
             return;
         }
 
-        VersionUp();
-        BuildPlayer(config);
+        VersionUp ();
+        BuildPlayer (config);
     }
 
     [MenuItem ("Assets/G-Tech Lab/Open Build Folder")]
     public static void OpenBuildFolder () {
         var config = Selection.activeObject as cxAppBuilder;
         if (config == null) {
-            UnityEngine.Debug.LogError("cxBuilderConfiguration 에셋을 선택해주세요.");
+            UnityEngine.Debug.LogError ("cxBuilderConfiguration 에셋을 선택해주세요.");
             return;
         }
 
         var deployPath = Path.Combine (Application.dataPath, "..", config.deployBasePath);
         OpenTerminalAtPath (deployPath);
     }
-    
+
     private static void OpenTerminalAtPath (string folderPath) {
         // macOS에서 open 명령을 사용하여 터미널 열기
         ProcessStartInfo processInfo = new ProcessStartInfo ("open", $"-a Terminal {folderPath}");
@@ -83,39 +84,38 @@ public class cxAppBuilder : ScriptableObject {
         PlayerSettings.bundleVersion = string.Format ("{0}.{1}.{2}", v1, v2, v3 + 1);
     }
 
-     static void BuildPlayer (cxAppBuilder configuration) {
+    static void BuildPlayer (cxAppBuilder configuration) {
 
-        if(string.IsNullOrEmpty(configuration.mainScenePath)) {
-            UnityEngine.Debug.LogError("메인 씬 경로가 설정되지 않았습니다.");
+        if (string.IsNullOrEmpty (configuration.mainScenePath)) {
+            UnityEngine.Debug.LogError ("메인 씬 경로가 설정되지 않았습니다.");
             return;
         }
 
-        if(string.IsNullOrEmpty(configuration.deployBasePath)) {
-            UnityEngine.Debug.LogError("배포 경로가 설정되지 않았습니다.");
+        if (string.IsNullOrEmpty (configuration.deployBasePath)) {
+            UnityEngine.Debug.LogError ("배포 경로가 설정되지 않았습니다.");
             return;
         }
 
         BuildTargetGroup buildTargetGroup = BuildTargetGroup.WebGL;
-        if(configuration.buildTarget == BuildTarget.WebGL) {
+        if (configuration.buildTarget == BuildTarget.WebGL) {
             buildTargetGroup = BuildTargetGroup.WebGL;
-        } else if(configuration.buildTarget == BuildTarget.Android) {
+        } else if (configuration.buildTarget == BuildTarget.Android) {
             buildTargetGroup = BuildTargetGroup.Android;
-        } else if(configuration.buildTarget == BuildTarget.iOS) {
+        } else if (configuration.buildTarget == BuildTarget.iOS) {
             buildTargetGroup = BuildTargetGroup.iOS;
-        } else if(configuration.buildTarget == BuildTarget.StandaloneWindows64) {
+        } else if (configuration.buildTarget == BuildTarget.StandaloneWindows64) {
             buildTargetGroup = BuildTargetGroup.Standalone;
-        } else if(configuration.buildTarget == BuildTarget.StandaloneLinux64) {
+        } else if (configuration.buildTarget == BuildTarget.StandaloneLinux64) {
             buildTargetGroup = BuildTargetGroup.Standalone;
-        } else if(configuration.buildTarget == BuildTarget.StandaloneOSX) {
+        } else if (configuration.buildTarget == BuildTarget.StandaloneOSX) {
             buildTargetGroup = BuildTargetGroup.Standalone;
-        } else if(configuration.buildTarget == BuildTarget.StandaloneWindows) {
+        } else if (configuration.buildTarget == BuildTarget.StandaloneWindows) {
             buildTargetGroup = BuildTargetGroup.Standalone;
         } else {
-            UnityEngine.Debug.LogError("지원하지 않는 빌드 타겟입니다.");
+            UnityEngine.Debug.LogError ("지원하지 않는 빌드 타겟입니다.");
             return;
         }
 
-        
         BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions ();
 
         List<string> scenes = new List<string> { configuration.mainScenePath };
@@ -129,6 +129,24 @@ public class cxAppBuilder : ScriptableObject {
         buildPlayerOptions.locationPathName = GetBuildPath (configuration.deployBasePath, configuration.buildTarget);
         buildPlayerOptions.target = configuration.buildTarget;
         buildPlayerOptions.options = BuildOptions.None;
+
+
+        if (!string.IsNullOrEmpty (configuration.defineSymbolRemove)) {
+            string[] defineSymbolRemoves = configuration.defineSymbolRemove.Split (';');
+            foreach (string defineSymbol in defineSymbolRemoves) {
+                RemoveDefineSymbole (buildTargetGroup, defineSymbol);
+            }
+        }
+
+        if (!string.IsNullOrEmpty (configuration.defineSymbolAdd)) {
+            string[] defineSymbolAdds = configuration.defineSymbolAdd.Split (';');
+            foreach (string defineSymbol in defineSymbolAdds) {
+                AddDefineSymbole (buildTargetGroup, defineSymbol);
+            }
+        }
+
+
+       
 
         // Windows 빌드 설정
         /*
@@ -170,5 +188,19 @@ public class cxAppBuilder : ScriptableObject {
     public static string GetBuildPath (string deployBasePath, BuildTarget buildTarget) {
         string basePath = Path.Combine (Application.dataPath, "..", deployBasePath, buildTarget.ToString ());
         return basePath;
+    }
+
+    static void RemoveDefineSymbole (BuildTargetGroup targetGroup, string defineSymbol) {
+        string definesString = PlayerSettings.GetScriptingDefineSymbolsForGroup (targetGroup);
+        List<string> allDefines = new List<string> (definesString.Split (';'));
+        allDefines.Remove (defineSymbol);
+        PlayerSettings.SetScriptingDefineSymbolsForGroup (targetGroup, string.Join (";", allDefines.ToArray ()));
+    }
+
+    static void AddDefineSymbole (BuildTargetGroup targetGroup, string defineSymbol) {
+        string definesString = PlayerSettings.GetScriptingDefineSymbolsForGroup (targetGroup);
+        List<string> allDefines = new List<string> (definesString.Split (';'));
+        allDefines.Add (defineSymbol);
+        PlayerSettings.SetScriptingDefineSymbolsForGroup (targetGroup, string.Join (";", allDefines.ToArray ()));
     }
 }

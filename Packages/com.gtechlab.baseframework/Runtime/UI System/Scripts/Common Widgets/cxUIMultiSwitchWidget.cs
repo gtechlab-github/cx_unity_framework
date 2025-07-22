@@ -13,6 +13,8 @@ public class cxUIMultiSwitchWidget : MonoBehaviour {
     [SerializeField]
     private int selectedNo = 0;
 
+    public int SelectedNo { get { return selectedNo; } }
+
     public UnityEvent<int> OnSelected { get; private set; } = new UnityEvent<int> ();
 
     void Awake () {
@@ -20,16 +22,31 @@ public class cxUIMultiSwitchWidget : MonoBehaviour {
             int buttonNo = i;
             buttons[buttonNo].SetOn (selectedNo == buttonNo);
             buttons[buttonNo].onClick.AddListener ((on) => {
-               OnSelect (buttonNo);
+                OnSelect (buttonNo);
             });
         }
     }
 
-    public void SwitchButton (int buttonNo) {
-        selectedNo = buttonNo;
+    public void SwitchButtonWithoutNotify (int buttonNo) {
+        if(buttons.Count == 0)
+            return;
+
+        selectedNo = buttonNo % buttons.Count;
         for (int i = 0; i < buttons.Count; i++) {
             buttons[i].SetOn (selectedNo == i);
         }
+    }
+
+     public void SwitchButton (int buttonNo) {
+        if(buttons.Count == 0)
+            return;
+
+        selectedNo = buttonNo % buttons.Count;
+        for (int i = 0; i < buttons.Count; i++) {
+            buttons[i].SetOn (selectedNo == i);
+        }
+
+        OnSelected.Invoke (buttonNo);
     }
 
     void OnSelect (int index) {
@@ -45,6 +62,9 @@ public class cxUIMultiSwitchWidget : MonoBehaviour {
     }
 
     void OnValidate () {
+        if(buttons == null)
+            return;
+
         for (int i = 0; i < buttons.Count; i++) {
             int buttonNo = i;
             buttons[buttonNo].SetOn (selectedNo == buttonNo);

@@ -1,9 +1,10 @@
 mergeInto(LibraryManager.library, {
 
-    UploadFile: function(path, data, callbackId) {
+    UploadFile: function(path, data, contentType, callbackId) {
 
         var parsedPath = UTF8ToString(path);
         var parsedData = UTF8ToString(data);
+        var parsedContentType = UTF8ToString(contentType);
         //var parsedObjectName = UTF8ToString(objectName);
         // var parsedCallback = UTF8ToString(callback);
         // var parsedFallback = UTF8ToString(fallback);
@@ -11,7 +12,7 @@ mergeInto(LibraryManager.library, {
 
         try {
 
-            firebase.storage().ref(parsedPath).put(base64ToArrayBuffer(parsedData)).then(function(snapshot) {
+            firebase.storage().ref(parsedPath).put(base64ToArrayBuffer(parsedData), { contentType: parsedContentType }).then(function(snapshot) {
                 var delegateSnaphsot = snapshot._delegate
                // window.unityInstance.SendMessage(parsedObjectName, parsedCallback, "Success: data was posted to " + parsedPath);
                 Module.CallManagedCallback(callbackId, JSON.stringify(delegateSnaphsot));
