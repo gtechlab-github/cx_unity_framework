@@ -164,7 +164,8 @@ public class cxUIInputController : MonoSingleton<cxUIInputController> {
             release = true;
         }
 
-        ScrollDeltaThisFrame = Input.mouseScrollDelta;
+        // ScrollDeltaThisFrame = Input.mouseScrollDelta;
+        ScrollDeltaThisFrame = new Vector2 (0, Input.GetAxis ("Mouse ScrollWheel"));
 
         if (clickAtLongPress && beginPosition.HasValue && !mouseDragged) {
             pressTime = Time.realtimeSinceStartup - downTime;

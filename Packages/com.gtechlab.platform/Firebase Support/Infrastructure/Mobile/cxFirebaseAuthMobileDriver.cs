@@ -135,7 +135,7 @@ public class cxFirebaseAuthMobileDriver : cxIFirebaseAuthDriver {
             case AuthError.WeakPassword:
                 return new cxBlocException (0, "The password is too weak.");
             default:
-                return new cxBlocException (0, "Unknown error occurred: " + exception.Message);
+                return new cxBlocException (0, "(" + errorCode + ")" + exception.Message);
         }
     }
 
