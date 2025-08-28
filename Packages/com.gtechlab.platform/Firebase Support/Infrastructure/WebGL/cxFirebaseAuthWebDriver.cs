@@ -98,10 +98,10 @@ public class cxFirebaseAuthWebGLDriver : cxIFirebaseAuthDriver {
     }
 
 
-    public  override async Task ResetEmailPassword () {
+    public  override async Task SendPasswordResetEmail (string email) {
         try {
-            //await FirebaseAuth.SendPasswordResetEmail(email);
-            throw new Exception("Not implemented");
+            await FirebaseAuth.SendPasswordResetEmail(email);
+            //throw new Exception("Not implemented");
 
         }  catch (Exception e) {
             throw HandleException (e);

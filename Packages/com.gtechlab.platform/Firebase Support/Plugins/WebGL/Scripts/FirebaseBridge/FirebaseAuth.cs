@@ -68,6 +68,9 @@ namespace FirebaseWebGL.Scripts.FirebaseBridge {
         [DllImport ("__Internal", EntryPoint = "OnAuthStateChanged")]
         public static extern void _OnAuthStateChanged (int callbackId);
 
+        [DllImport ("__Internal", EntryPoint = "SendPasswordResetEmail")]
+        public static extern void _SendPasswordResetEmail (string email, int callbackId);
+
         [DllImport ("__Internal", EntryPoint = "SignOut")]
         public static extern void _SignOut ();
 
@@ -106,6 +109,14 @@ namespace FirebaseWebGL.Scripts.FirebaseBridge {
             string json = await context.tcs.Task;
             var user = JsonUtility.FromJson<FirebaseUser> (json);
             return user;
+        }
+
+        public static async Task SendPasswordResetEmail (string email) {
+            var context = cxWebCallack.AddCallback ();
+            _SendPasswordResetEmail (email, context.callbackId);
+            string json = await context.tcs.Task;
+            // var user = JsonUtility.FromJson<FirebaseUser> (json);
+            // return user;
         }
 
         public static async Task<FirebaseUser> SignInWithGoogle () {

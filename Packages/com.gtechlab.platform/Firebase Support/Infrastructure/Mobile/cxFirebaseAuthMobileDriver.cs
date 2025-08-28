@@ -96,15 +96,14 @@ public class cxFirebaseAuthMobileDriver : cxIFirebaseAuthDriver {
     }
 
 
-    public  override async Task ResetEmailPassword () {
+    public  override async Task SendPasswordResetEmail (string email) {
         try {
             
             var auth = FirebaseAuth.GetAuth (FirebaseApp.DefaultInstance);
-            if(currentUser == null || currentUser.Email == null) {
-                throw new cxBlocException (0, "No user signed in.");
-            }
-
-            var email = currentUser.Email;
+            // if(currentUser == null || currentUser.Email == null) {
+            //     throw new cxBlocException (0, "No user signed in.");
+            // }
+            // var email = currentUser.Email;
             await auth.SendPasswordResetEmailAsync(email);
 
         } catch (TaskCanceledException e) {

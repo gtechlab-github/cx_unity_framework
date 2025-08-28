@@ -11,5 +11,5 @@ public abstract class cxIFirebaseAuthDriver {
     public abstract Task<TSocialUserModel> SignInWithEmailAndPassword (string email, string password);
     public abstract Task<TSocialUserModel> SignInWithGoogle ();
     public abstract Task SignOut ();
-    public abstract Task ResetEmailPassword ();
+    public abstract Task SendPasswordResetEmail (string email);
 }

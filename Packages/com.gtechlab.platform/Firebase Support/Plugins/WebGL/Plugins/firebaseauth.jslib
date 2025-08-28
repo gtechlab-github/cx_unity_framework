@@ -84,6 +84,15 @@ mergeInto(LibraryManager.library, {
         }
     },
 
+    SendPasswordResetEmail: function (email, callbackId) {
+        var parsedEmail = UTF8ToString(email);
+        firebase.auth().sendPasswordResetEmail(parsedEmail).then(function (result) {
+            Module.CallManagedCallback(callbackId, JSON.stringify(result));
+        }).catch(function (error) {
+            Module.CallManagedFallback(callbackId, JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        });
+    },
+
 //  firebase.auth().signInWithPopup(provider)
 //       .then((result) => {
 //         var jstr = JSON.stringify(result);

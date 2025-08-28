@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [CreateAssetMenu (fileName = "AppBuilder", menuName = "G-Tech Lab/Create App Builder")]
 public class cxAppBuilder : ScriptableObject {
@@ -11,7 +12,9 @@ public class cxAppBuilder : ScriptableObject {
     public cxStartUpEnvId startUpEnvId;
     public string defineSymbolAdd;
     public string defineSymbolRemove;
+    [AssetPath.Attribute(typeof(Object))]
     public string mainScenePath;
+    [AssetPath.Attribute(typeof(Object))]
     public List<string> contentScenePaths;
 
     [Header ("Deploy Path based on Project Path")]

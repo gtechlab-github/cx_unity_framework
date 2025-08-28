@@ -34,10 +34,18 @@ public class cxUIOnOffButton : MonoBehaviour {
         SetOn(isOn);
     }
     
-    public void SetOn (bool isOn) {
+    public void SetOn (bool isOn, bool notify = false) {
         this.isOn = isOn;
         on.gameObject.SetActive (isOn);
         off.gameObject.SetActive (!isOn);
+
+        if(notify){
+            onClick.Invoke (isOn);
+        }
+    }
+
+    public void SetOnWithoutNotify (bool isOn) {
+        SetOn(isOn, false);
     }
 
     public void Toggle () {
