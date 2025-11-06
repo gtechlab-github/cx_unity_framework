@@ -12,6 +12,15 @@ public static class cxUIComponentExt {
         if (tmp) tmp.text = label;
     }
 
+     public static void SetLabel (this GameObject button, string label) {
+        var text = button.GetComponentInChildren<Text> ();
+        if (text) text.text = label;
+
+        var tmp = button.GetComponentInChildren<TMPro.TMP_Text> ();
+        if (tmp) tmp.text = label;
+    }
+
+
     public static void SetAllColor (this RectTransform widget, Color color) {
         var images = FindAllComponents<Graphic> (widget);
         var texts = FindAllComponents<Text> (widget);

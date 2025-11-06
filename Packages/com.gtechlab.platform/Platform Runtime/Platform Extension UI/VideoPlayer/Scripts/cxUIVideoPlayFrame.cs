@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 using System;
+using TMPro;
 
 public class cxUIVideoPlayFrame : cxUIParameterFrame<cxUIVideoPlayFrame.FrameArgs> {
 
@@ -14,13 +15,14 @@ public class cxUIVideoPlayFrame : cxUIParameterFrame<cxUIVideoPlayFrame.FrameArg
         public string videoURL;
         public string tipMessage;
         public int requiredPlayTime;
+        public float startTime = 0;
     }
 
     public Button closeButton;
     public cxUIVideoController contoller;
 
     public GameObject tipMessagePanel;
-    public Text tipMessageText;
+    public TMP_Text tipMessageText;
     public float tipMessageTime = 20.0f;
 
 
@@ -37,6 +39,10 @@ public class cxUIVideoPlayFrame : cxUIParameterFrame<cxUIVideoPlayFrame.FrameArg
 
         contoller.OnVideoReady.AddListener (() => {
             playStartTime = Time.realtimeSinceStartup;
+
+            if(frameArgs.startTime > 0) {
+                contoller.SeekPlayTime(frameArgs.startTime);
+            }
         });
 
         contoller.OnVideoFinished.AddListener (() => {

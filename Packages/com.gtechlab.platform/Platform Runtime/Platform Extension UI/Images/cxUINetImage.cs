@@ -46,6 +46,17 @@ public class cxUINetImage : MonoBehaviour {
         }
     }
 
+    public void LoadSprite (Sprite sprite) {
+        if(sprite == null) {
+            SetEmpty();
+            return;
+        }
+
+        image.color = Color.white;
+        image.sprite = sprite;
+        aspectRatio.aspectRatio = (float) sprite.texture.width / (float) sprite.texture.height;
+    }
+
     void SetEmpty () {
         if(image == null) {
             image = GetComponent<Image> ();

@@ -71,6 +71,14 @@ public struct TVector3 {
     public static implicit operator TVector3(Vector3 v) {
         return new TVector3(v.x, v.y, v.z);
     }
+    public static bool Equals (TVector3 a, TVector3 b) {
+        float epsilon = Mathf.Epsilon;
+        return Mathf.Abs (a.x - b.x) < epsilon && Mathf.Abs (a.y - b.y) < epsilon && Mathf.Abs (a.z - b.z) < epsilon;
+    }
+
+    public bool Equals(TVector3 other) {
+        return Equals(this, other);
+    }
 }
 
 [System.Serializable]

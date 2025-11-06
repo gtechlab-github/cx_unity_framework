@@ -3,62 +3,64 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent (typeof (Button))]
-public class cxUIMultiToggleWidget : MonoBehaviour
-{
+public class cxUIMultiToggleWidget : MonoBehaviour {
     [SerializeField] private List<GameObject> buttons;
     [SerializeField] private bool isPingPong = false;
     [SerializeField] private int selectedNo = 0;
-   
-    public int SelectedNo => selectedNo;
-    public UnityEngine.Events.UnityEvent<int> OnSelected {get;private set;}= new UnityEngine.Events.UnityEvent<int> ();
-    private int pingPongDir = 1;
 
-    void Awake()
-    {
-        GetComponent<Button> ().onClick.AddListener (() => {
-            OnSelect(GetNextIndex());
-            OnSelected.Invoke (selectedNo);
-        });  
+    private bool interactable = true;
 
-        OnSelect(selectedNo);
+    public bool Interactable {
+        get => interactable;
+        set {
+            interactable = value;
+            var button = GetComponent<Button>();
+            if (button != null) {
+                button.interactable = interactable;
+            }
+        }
     }
 
-    int GetNextIndex()
-    {
-        if(isPingPong)
-        {
+    public int SelectedNo => selectedNo;
+    public UnityEngine.Events.UnityEvent<int> OnSelected { get; private set; } = new UnityEngine.Events.UnityEvent<int> ();
+    private int pingPongDir = 1;
+
+    void Awake () {
+        GetComponent<Button> ().onClick.AddListener (() => {
+            OnSelect (GetNextIndex ());
+            OnSelected.Invoke (selectedNo);
+        });
+
+        OnSelect (selectedNo);
+    }
+
+    int GetNextIndex () {
+        if (isPingPong) {
             var next = selectedNo + pingPongDir;
-            if(next >= buttons.Count)
-            {
+            if (next >= buttons.Count) {
                 pingPongDir = -1;
                 next = selectedNo + pingPongDir;
-            }else if(next < 0)
-            {
+            } else if (next < 0) {
                 pingPongDir = 1;
                 next = selectedNo + pingPongDir;
             }
             return next;
-        }
-        else
-        {
-            return  (selectedNo + 1) % buttons.Count;
+        } else {
+            return (selectedNo + 1) % buttons.Count;
         }
     }
 
-    public void SwitchButtonWithoutNotify(int index)
-    {
-        OnSelect(index);
+    public void SwitchButtonWithoutNotify (int index) {
+        OnSelect (index);
     }
 
-    public void SwitchButton(int index)
-    {
-        OnSelect(index);
+    public void SwitchButton (int index) {
+        OnSelect (index);
         OnSelected.Invoke (selectedNo);
     }
 
-    void OnSelect(int index)
-    {
-        if(buttons.Count == 0)
+    void OnSelect (int index) {
+        if (buttons.Count == 0)
             return;
 
         index = index % buttons.Count;
@@ -68,9 +70,8 @@ public class cxUIMultiToggleWidget : MonoBehaviour
         }
     }
 
-    void OnValidate()
-    {
-        OnSelect(selectedNo);
+    void OnValidate () {
+        OnSelect (selectedNo);
     }
 
 }

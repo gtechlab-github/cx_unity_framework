@@ -45,6 +45,13 @@ public class cxUIInputController : MonoSingleton<cxUIInputController> {
     public bool IsFocused => focused != null || IsAnyInputFieldFocused ();
     public bool HasFocus (GameObject gObject) => focused == gObject || EventSystem.current.currentSelectedGameObject == gObject;
 
+    /// <summary>
+    /// 포커스 가능한지 체크 
+    ///     InputField 포커싱 상테에서는 포커스 불가
+    ///     특정 오브젝트에 포커스 되어 있는 경우 포커스 불가
+    /// </summary>
+    /// <param name="go"></param>
+    /// <returns></returns>
     public bool CanAcquireFocus (GameObject go) {
 
         if (focused == go)

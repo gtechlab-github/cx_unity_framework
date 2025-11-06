@@ -74,6 +74,9 @@ public class cxUIViewportCanvas : MonoBehaviour {
 
         keepWidth = sceneViewRectT.rect.width;
         keepHeight = sceneViewRectT.rect.height;
+
+        //camera.aspect = 1;
+        
     }
 
     // void Update () {

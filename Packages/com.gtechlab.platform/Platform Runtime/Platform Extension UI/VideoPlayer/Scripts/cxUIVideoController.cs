@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.Video;
+using TMPro;
 
 public class cxUIVideoController : MonoBehaviour {
     public enum VideoState {
@@ -40,8 +41,8 @@ public class cxUIVideoController : MonoBehaviour {
     public cxUITweenPanel controlPanel;
     public int hideScreenControlTime = 0;
     public Slider playbackSlider;
-    public Text currentTime;
-    public Text totalTime;
+    public TMP_Text currentTime;
+    public TMP_Text totalTime;
     public Button playButton;
     public Button pauseButton;
     public Button volumeOnButton;
@@ -52,7 +53,7 @@ public class cxUIVideoController : MonoBehaviour {
 
     [Header ("On Error Panel")]
     public GameObject errorPanel;
-    public Text errorText;
+    public TMP_Text errorText;
 
     
     //private bool showPlayerControl = false;
@@ -186,6 +187,7 @@ public class cxUIVideoController : MonoBehaviour {
             _player.url = url;
             _player.isLooping = loop;
             _player.Play ();
+            
         } else if (cxResourceNaming.IsStreaming (url, out string path)) {
             //Note. cannot read file error on ios file:///...
 
@@ -273,6 +275,13 @@ public class cxUIVideoController : MonoBehaviour {
     public void ChangeVideoTime (float value) {
         float time = value * (float) _player.length;
 
+        _player.time = time;
+        _player.Pause ();
+        loading.SetActive (true);
+        seeking = true;
+    }
+
+    public void SeekPlayTime (float time) {
         _player.time = time;
         _player.Pause ();
         loading.SetActive (true);

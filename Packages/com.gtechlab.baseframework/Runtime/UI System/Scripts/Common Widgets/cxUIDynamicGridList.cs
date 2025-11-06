@@ -8,8 +8,10 @@ public class cxUIDynamicGridList : MonoBehaviour {
 	public GameObject prefabItem;
 	public GameObject prefabDummy;
 	public Transform gridLayout;
-
 	public int lineCount;
+
+	[Header("FX Options")]
+	public cxUITweenPanel listFx;
 
 	List<GameObject> m_itemList = new List<GameObject> ();
 	List<GameObject> m_dummyList = new List<GameObject> ();
@@ -103,6 +105,10 @@ public class cxUIDynamicGridList : MonoBehaviour {
 		ClearUnusedItemList (used);
 		if (refreshLayout) {
 			RefeshLayout ();
+		}
+
+		if (listFx != null) {
+			listFx.Play ();
 		}
 	}
 

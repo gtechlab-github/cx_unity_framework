@@ -34,8 +34,8 @@ public class cxUIConfirmDialog : cxUIFrame {
 #endif
     }
 
-    public UIWidget m_widget;
-    public MethodCall m;
+    [SerializeField] private UIWidget m_widget;
+    private MethodCall m;
 
     protected override void OnInit () {
         m_widget.submitButton.OnClickAsObservable ().Subscribe (s => {
@@ -58,13 +58,11 @@ public class cxUIConfirmDialog : cxUIFrame {
 
             m = param.method;
 
-            // m_widget.submitButton.GetComponentInChildren<Text> ().text = param.confirmText;
             m_widget.submitButton.SetLabel(param.confirmText);
 
             if (!string.IsNullOrEmpty (param.cancelText)) {
                 m_widget.cancelButton.gameObject.SetActive (true);
                 m_widget.cancelButton.SetLabel(param.cancelText);
-                // m_widget.cancelButton.GetComponentInChildren<Text> ().text = param.cancelText;
             } else {
                 m_widget.cancelButton.gameObject.SetActive (false);
             }

@@ -6,9 +6,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class cxUIToastMessageFrame : cxUIFrame {
+    
     public enum MsgType {
         Normal,
-        Warning
+        Warning,
+        Congratulation
     }
 
     [SerializeField]
@@ -35,6 +37,11 @@ public class cxUIToastMessageFrame : cxUIFrame {
     [SerializeField]
     private Color warningMessageColor = Color.white;
 
+     [SerializeField]
+    private Color congratulationMessageBg = Color.yellow;
+    [SerializeField]
+    private Color congratulationMessageColor = Color.white;
+
     protected override void OnInit () {
         //cxUINavigator.Instance.PushFrame<cxUIToastMessageFrame>();
     }
@@ -48,16 +55,19 @@ public class cxUIToastMessageFrame : cxUIFrame {
     }
 
     public void ShowToast (string message, MsgType msgType = MsgType.Normal) {
+
+        Color messageColor = msgType == MsgType.Normal ? normalMessageColor : msgType == MsgType.Warning ? warningMessageColor : congratulationMessageColor;
+        Color backgroundColor = msgType == MsgType.Normal ? normalMessageBg : msgType == MsgType.Warning ? warningMessageBg : congratulationMessageBg;
         if (this.message) {
             this.message.text = message;
-             this.message.color = msgType == MsgType.Normal ? normalMessageColor : warningMessageColor;
+             this.message.color = messageColor;
         }
         if (this.messageTmp){
             this.messageTmp.text = message;
-            this.messageTmp.color = msgType == MsgType.Normal ? normalMessageColor : warningMessageColor;
+            this.messageTmp.color = messageColor;
         }
 
-        this.background.color = msgType == MsgType.Normal ? normalMessageBg : warningMessageBg;
+        this.background.color = backgroundColor;
 
         panel.Play ();
         panel.ScheduledHide (hideTime);
@@ -89,5 +99,14 @@ public class cxUIToastMessageFrame : cxUIFrame {
             this.message.color = normalMessageColor;
         if (this.messageTmp)
             this.messageTmp.color = normalMessageColor;
+    }
+
+    [ContextMenu ("SetCongratulationMode")]
+    void SetCongratulationMode () {
+        this.background.color = congratulationMessageBg;
+        if (this.message)
+            this.message.color = congratulationMessageColor;
+        if (this.messageTmp)
+            this.messageTmp.color = congratulationMessageColor;
     }
 }
