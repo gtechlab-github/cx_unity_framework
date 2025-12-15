@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UniRx;
@@ -6,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
+[Obsolete("Use cxUINetImage")]
 [RequireComponent (typeof (Mask))]
 public class cxUIProfileImage : MonoBehaviour {
     static Dictionary<string, Texture> Caching = new Dictionary<string, Texture> ();

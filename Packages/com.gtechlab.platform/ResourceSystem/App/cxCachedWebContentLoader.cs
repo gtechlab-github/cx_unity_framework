@@ -52,6 +52,15 @@ public class cxCachedWebContentLoader : cxSingleton<cxCachedWebContentLoader> {
         cachedContents.Clear ();
     }
 
+     public void ClearCache(string url)
+    {
+        var cached = Find (url);
+        if(cached != null && cached.state.Value == LoadingState.Loaded)
+        {
+            cachedContents.Remove(url.ToLower());
+        }
+    }
+
     public bool HasCache (string url) {
         var cached = Find (url);
         return cached != null && cached.state.Value == LoadingState.Loaded;
@@ -65,6 +74,8 @@ public class cxCachedWebContentLoader : cxSingleton<cxCachedWebContentLoader> {
         var cached = await LoadImpl<T> (url);
         return (cached != null) ? cached.To<T> () : null;
     }
+
+   
 
     // public async Task<Sprite> LoadSprite (string url) {
     //     var cached = await LoadImplEx<Sprite> (url);

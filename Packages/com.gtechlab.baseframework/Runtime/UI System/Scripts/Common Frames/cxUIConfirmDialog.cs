@@ -53,8 +53,10 @@ public class cxUIConfirmDialog : cxUIFrame {
         var param = showParam as ShowParam;
         if (param != null) {
 
-            m_widget.title.text = param.title;
-            m_widget.message.text = param.message;
+            m_widget.title.text = param.title ?? "";
+            m_widget.message.text = param.message ?? "";
+            m_widget.title.gameObject.SetActive(!string.IsNullOrEmpty(param.title));
+            m_widget.message.gameObject.SetActive(!string.IsNullOrEmpty(param.message));
 
             m = param.method;
 
